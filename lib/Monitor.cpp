@@ -6,31 +6,26 @@ Monitor::Monitor() {
 }
 
 void Monitor::begin() {
-    // Init HTU21D
-    htu21d.begin();
-
-    // Init MPL3115A2
-    mpl3115a2.begin();
-    mpl3115a2.setModeBarometer();
-    mpl3115a2.setOversampleRate(7);
-    mpl3115a2.enableEventFlags();
-}
-
-// Housekeeping stuff
-void Monitor::update() {
+    tempSensor.begin();
 }
 
 Conditions *Monitor::getConditions() {
-    // Humidity from HTU21D
-    data.humidity = htu21d.readHumidity();
+    data.tempF = getTempF();
 
-    // Temperature from HTU21D (Fahrenheit)
-    data.tempF = (htu21d.readTemperature() * 1.8) + 32.0;
-
-    // Pressure from MPL3115A2 (Pascals)
-    data.pressurePa = mpl3115a2.readPressure();
-
-    update();
-
+    // 0 to 4095 on Photon
+    int val = analogRead(A0);
+    // Map to percentage
+    data.brightness = map(val, 0, 4095, 0, 100);
     return &data;
+}
+
+float Monitor::getTempF() {
+    tempSensor.requestTemperatures();
+
+    // NOTE: Although there is a getTempFByIndex() method and the code compiles
+    // when using it, the resulting .bin file will not flash and work on
+    // the Particle Photon for some reason. It puts it into "red blinking state"
+    float temp = (tempSensor.getTempCByIndex(0) * 1.8) + 32.0;
+
+    return (temp);
 }
