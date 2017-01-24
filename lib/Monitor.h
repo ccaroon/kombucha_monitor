@@ -5,9 +5,6 @@
 #include "application.h"
 #include "spark-dallas-temperature.h"
 
-#define MIN_TEMP_F -67.0
-#define MIN_TEMP_C -55.0
-
 struct Conditions {
     float tempF = 0.0;
     uint8_t brightness = 0;
