@@ -1,9 +1,9 @@
 #ifndef Monitor_h
 #define Monitor_h
 
-#include "DallasTemperature.h"
 #include "OneWire.h"
 #include "application.h"
+#include "spark-dallas-temperature.h"
 
 #define MIN_TEMP_F -67.0
 #define MIN_TEMP_C -55.0
