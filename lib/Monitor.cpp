@@ -20,12 +20,15 @@ Conditions *Monitor::getConditions() {
 }
 
 float Monitor::getTempF() {
-    tempSensor.requestTemperatures();
+    bool success = tempSensor.requestTemperaturesByIndex(0);
 
-    // NOTE: Although there is a getTempFByIndex() method and the code compiles
-    // when using it, the resulting .bin file will not flash and work on
-    // the Particle Photon for some reason. It puts it into "red blinking state"
-    float temp = (tempSensor.getTempCByIndex(0) * 1.8) + 32.0;
+    float temp = data.tempF;
+    if (success) {
+        // NOTE: Although there is a getTempFByIndex() method and the code compiles
+        // when using it, the resulting .bin file will not flash and work on
+        // the Particle Photon for some reason. It puts it into "red blinking state"
+        temp = (tempSensor.getTempCByIndex(0) * 1.8) + 32.0;
+    }
 
     return (temp);
 }

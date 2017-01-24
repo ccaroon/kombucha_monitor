@@ -1,12 +1,9 @@
 #ifndef Monitor_h
 #define Monitor_h
 
-#include "DallasTemperature.h"
 #include "OneWire.h"
 #include "application.h"
-
-#define MIN_TEMP_F -67.0
-#define MIN_TEMP_C -55.0
+#include "spark-dallas-temperature.h"
 
 struct Conditions {
     float tempF = 0.0;

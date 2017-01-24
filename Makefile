@@ -1,4 +1,4 @@
-kombucha_monitor.bin: main.ino lib/*.h lib/*.cpp lib/*/*.h lib/*/*.cpp
+kombucha_monitor.bin: project.properties main.ino lib/*
 	particle compile photon . --saveTo kombucha_monitor.bin
 
 flash: kombucha_monitor.bin
