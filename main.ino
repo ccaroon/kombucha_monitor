@@ -6,8 +6,11 @@
 #define LOW_TEMP 70.0
 #define HIGH_TEMP 85.0
 
-// Blynk Setup
-char auth[] = "69f39e4c35fb424187209794d6a32264";
+// Single Blynk App
+// char auth[] = "69f39e4c35fb424187209794d6a32264";
+
+// Combined Blynk App (Omega)
+char auth[] = "551986437f03482bb5b8a7bbbc01623d";
 
 long startTime = 1484415000;
 long lastUpdate = 0;
@@ -57,7 +60,7 @@ void loop() {
         // Get erratic reading from the Temp Sensor sometimes.
         // Protected against those
         if (data->tempF > 65.0) {
-            Blynk.virtualWrite(1, data->tempF);
+            Blynk.virtualWrite(1, String::format("%0.1f", data->tempF));
 
             if (data->tempF < LOW_TEMP) {
                 Blynk.virtualWrite(4, 255);
