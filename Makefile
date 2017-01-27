@@ -1,8 +1,11 @@
-kombucha_monitor.bin: project.properties main.ino lib/*
-	particle compile photon . --saveTo kombucha_monitor.bin
+kombucha_monitor.bin: project.properties lib/* src/*
+	mkdir -p build/
+	cp project.properties `find lib src -type f` build/
+	particle compile photon build/ --saveTo kombucha_monitor.bin
+	rm -rf build/
 
 flash: kombucha_monitor.bin
 	particle flash Greebo kombucha_monitor.bin
 
 clean:
-	rm -f kombucha_monitor.bin
+	rm -rf kombucha_monitor.bin build/

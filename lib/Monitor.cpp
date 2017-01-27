@@ -1,12 +1,11 @@
 #include "Monitor.h"
-#include <math.h>
 
 // Initialize
 Monitor::Monitor() {
 }
 
 void Monitor::begin() {
-    tempSensor.begin();
+    pinMode(D2, INPUT);
 }
 
 Conditions *Monitor::getConditions() {
@@ -20,15 +19,26 @@ Conditions *Monitor::getConditions() {
 }
 
 float Monitor::getTempF() {
-    bool success = tempSensor.requestTemperaturesByIndex(0);
+    float celsius, fahrenheit;
+    int dsAttempts;
 
-    float temp = data.tempF;
-    if (success) {
-        // NOTE: Although there is a getTempFByIndex() method and the code compiles
-        // when using it, the resulting .bin file will not flash and work on
-        // the Particle Photon for some reason. It puts it into "red blinking state"
-        temp = (tempSensor.getTempCByIndex(0) * 1.8) + 32.0;
+    fahrenheit = data.tempF;
+
+    if (!tempSensor.search()) {
+        tempSensor.resetsearch();
+        celsius = tempSensor.getTemperature();
+        while (!tempSensor.crcCheck() && dsAttempts < 4) {
+            dsAttempts++;
+            if (dsAttempts == 3) {
+                delay(1000);
+            }
+            tempSensor.resetsearch();
+            celsius = tempSensor.getTemperature();
+            continue;
+        }
+        dsAttempts = 0;
+        fahrenheit = tempSensor.convertToFahrenheit(celsius);
     }
 
-    return (temp);
+    return (fahrenheit);
 }

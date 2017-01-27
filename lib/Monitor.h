@@ -1,9 +1,8 @@
 #ifndef Monitor_h
 #define Monitor_h
 
-#include "OneWire.h"
-#include "application.h"
-#include "spark-dallas-temperature.h"
+#include "DS18B20/DS18B20.h"
+#include "DS18B20/Particle-OneWire.h"
 
 struct Conditions {
     float tempF = 0.0;
@@ -20,7 +19,7 @@ class Monitor {
     float getTempF();
 
   private:
-    DallasTemperature tempSensor = DallasTemperature(new OneWire(D2));
+    DS18B20 tempSensor = DS18B20(D2);
 
     Conditions data;
 };
