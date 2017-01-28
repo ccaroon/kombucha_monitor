@@ -4,14 +4,22 @@
 #define UPDATE_INTERVAL 5 // seconds
 #define LOW_TEMP 70.0
 #define HIGH_TEMP 85.0
+#define MAX_BREW_TIME 12 // days
+
+// TODO:
+// * Add percent done
+// * start time to String
 
 // Single Blynk App
-// char auth[] = "69f39e4c35fb424187209794d6a32264";
+char auth[] = "69f39e4c35fb424187209794d6a32264";
 
 // Combined Blynk App (Omega)
-char auth[] = "551986437f03482bb5b8a7bbbc01623d";
+// char auth[] = "551986437f03482bb5b8a7bbbc01623d";
 
-long startTime = 1484415000;
+// change startTime to human readable string
+// Jan 27 2017 20:15
+long startTime = 1485566100;
+
 long lastUpdate = 0;
 Monitor monitor;
 

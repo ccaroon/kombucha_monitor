@@ -12,7 +12,7 @@ Conditions *Monitor::getConditions() {
     data.tempF = getTempF();
 
     // 0 to 4095 on Photon
-    int val = analogRead(A0);
+    int val = analogRead(A3);
     // Map to percentage
     data.brightness = map(val, 0, 4095, 0, 100);
     return &data;
