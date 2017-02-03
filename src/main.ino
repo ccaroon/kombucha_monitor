@@ -66,23 +66,23 @@ void loop() {
 
         // Get erratic reading from the Temp Sensor sometimes.
         // Protected against those
-        // if (data->tempF > 65.0) {
-        Blynk.virtualWrite(1, String::format("%0.1f", data->tempF));
+        if (data->tempF > 50.0) {
+            Blynk.virtualWrite(1, String::format("%0.1f", data->tempF));
 
-        if (data->tempF < LOW_TEMP) {
-            Blynk.virtualWrite(4, 255);
-            Blynk.virtualWrite(5, 0);
-            Blynk.virtualWrite(6, 0);
-        } else if (data->tempF > HIGH_TEMP) {
-            Blynk.virtualWrite(4, 0);
-            Blynk.virtualWrite(5, 0);
-            Blynk.virtualWrite(6, 255);
-        } else {
-            Blynk.virtualWrite(4, 0);
-            Blynk.virtualWrite(5, 255);
-            Blynk.virtualWrite(6, 0);
+            if (data->tempF < LOW_TEMP) {
+                Blynk.virtualWrite(4, 255);
+                Blynk.virtualWrite(5, 0);
+                Blynk.virtualWrite(6, 0);
+            } else if (data->tempF > HIGH_TEMP) {
+                Blynk.virtualWrite(4, 0);
+                Blynk.virtualWrite(5, 0);
+                Blynk.virtualWrite(6, 255);
+            } else {
+                Blynk.virtualWrite(4, 0);
+                Blynk.virtualWrite(5, 255);
+                Blynk.virtualWrite(6, 0);
+            }
         }
-        // }
 
         Blynk.virtualWrite(2, data->brightness);
 
