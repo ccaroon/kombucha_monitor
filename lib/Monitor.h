@@ -16,9 +16,11 @@ class Monitor {
     void begin();
 
     Conditions *getConditions();
-    float getTempF();
 
   private:
+    int getBrightness();
+    float getTempF();
+
     DS18B20 tempSensor = DS18B20(D2);
 
     Conditions data;

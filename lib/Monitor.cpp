@@ -10,12 +10,17 @@ void Monitor::begin() {
 
 Conditions *Monitor::getConditions() {
     data.tempF = getTempF();
+    data.brightness = getBrightness();
 
+    return &data;
+}
+
+int Monitor::getBrightness() {
     // 0 to 4095 on Photon
     int val = analogRead(A3);
+
     // Map to percentage
-    data.brightness = map(val, 0, 4095, 0, 100);
-    return &data;
+    return (map(val, 0, 4095, 0, 100));
 }
 
 float Monitor::getTempF() {

@@ -1,14 +1,16 @@
 #include "Monitor.h"
 #include "blynk.h"
 
+#include <math.h>
+
 #define UPDATE_INTERVAL 5 // seconds
 #define LOW_TEMP 70.0
 #define HIGH_TEMP 85.0
-#define MAX_BREW_TIME 12 // days
+#define MAX_BREW_TIME 12.0 // days
 
 // TODO:
-// * Add percent done
-// * start time to String
+// - start time to String
+// - ability to set startTime from Blynk app
 
 // Single Blynk App
 char auth[] = "69f39e4c35fb424187209794d6a32264";
@@ -17,8 +19,8 @@ char auth[] = "69f39e4c35fb424187209794d6a32264";
 // char auth[] = "551986437f03482bb5b8a7bbbc01623d";
 
 // change startTime to human readable string
-// Jan 27 2017 20:15
-long startTime = 1485566100;
+// Feb 8 2017 20:30
+long startTime = 1486603800;
 
 long lastUpdate = 0;
 Monitor monitor;
@@ -63,6 +65,10 @@ void loop() {
         Blynk.virtualWrite(0, 255);
 
         Conditions *data = monitor.getConditions();
+
+        int days = (Time.now() - startTime) / 86400;
+        float percentComplete = (days / MAX_BREW_TIME) * 100;
+        Blynk.virtualWrite(V3, floor(percentComplete));
 
         // Get erratic reading from the Temp Sensor sometimes.
         // Protected against those
