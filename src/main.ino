@@ -50,8 +50,8 @@ String durationToString(long start, long end) {
     int mins = duration / 60;
     int secs = duration % 60;
 
-    char dStr[12];
-    sprintf(dStr, "%02d:%02d:%02d:%02d", days, hours, mins, secs);
+    char dStr[13];
+    sprintf(dStr, "%02dd %02d:%02d:%02d", days, hours, mins, secs);
 
     return (String(dStr));
 }
