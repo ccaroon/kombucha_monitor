@@ -21,7 +21,7 @@ char auth[] = "69f39e4c35fb424187209794d6a32264";
 
 // change startTime to human readable string
 // Feb 8 2017 20:30
-const long startTime = 1486603800;
+const long startTime = 1487638800;
 const long completionTime = startTime + (DAY_IN_SECS * MAX_BREW_TIME);
 const long totalBrewTime = completionTime - startTime;
 
@@ -73,7 +73,7 @@ void loop() {
     long currTime = Time.now();
 
     // Update Blynk App every UPDATE_INTERVAL seconds
-    if (currTime - lastUpdate > UPDATE_INTERVAL) {
+    if (currTime - lastUpdate >= UPDATE_INTERVAL) {
         // Turn on Virtual LED
         Blynk.virtualWrite(0, 255);
 
