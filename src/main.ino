@@ -20,7 +20,7 @@ char auth[] = "69f39e4c35fb424187209794d6a32264";
 // char auth[] = "551986437f03482bb5b8a7bbbc01623d";
 
 // change startTime to human readable string
-// Feb 8 2017 20:30
+// Feb 20 2017 20:00
 const long startTime = 1487638800;
 const long completionTime = startTime + (DAY_IN_SECS * MAX_BREW_TIME);
 const long totalBrewTime = completionTime - startTime;
@@ -31,7 +31,7 @@ Monitor monitor;
 BLYNK_WRITE(V8) {
     if (param.asInt() == 1) {
         Blynk.virtualWrite(9, 255);
-        Particle.syncTime();
+        // Particle.syncTime();
         Blynk.virtualWrite(9, 0);
     }
 }
