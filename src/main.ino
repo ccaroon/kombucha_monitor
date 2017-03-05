@@ -8,37 +8,84 @@
 #define HIGH_TEMP 85.0
 #define MAX_BREW_TIME 12.0 // days
 #define DAY_IN_SECS 86400
+#define START_TIME_ADDR 0
 
 // TODO:
-// - start time to String
 // - ability to set startTime from Blynk app
 
 // Single Blynk App
 char auth[] = "69f39e4c35fb424187209794d6a32264";
 
-// Combined Blynk App (Omega)
-// char auth[] = "551986437f03482bb5b8a7bbbc01623d";
-
-// change startTime to human readable string
-// Feb 20 2017 20:00
-const long startTime = 1487638800;
-const long completionTime = startTime + (DAY_IN_SECS * MAX_BREW_TIME);
-const long totalBrewTime = completionTime - startTime;
-
+//------------------------------------------------------------------------------
 long lastUpdate = 0;
 Monitor monitor;
 
+long startTime = 0;
+long completionTime = 0;
+long totalBrewTime = 0;
+
+// For tracking average temperature over time
+unsigned long sampleCount = 0;
+float tempSum = 0.0;
+
+// Keeps track of which percent complete notification have been send
+boolean notifyPercent[11] = {false};
+
+//------------------------------------------------------------------------------
 BLYNK_WRITE(V8) {
     if (param.asInt() == 1) {
-        Blynk.virtualWrite(9, 255);
-        // Particle.syncTime();
-        Blynk.virtualWrite(9, 0);
+        resetData(Time.now());
     }
+}
+
+BLYNK_WRITE(V10) {
+    if (param.asInt() == 1) {
+        // resetData(1488682800);
+    }
+}
+
+//------------------------------------------------------------------------------
+void notifyPercentComplete(float percent) {
+    for (uint8_t p = 1; p <= 10; p++) {
+        if (percent >= (p * 10) && notifyPercent[p] == false) {
+            notifyPercent[p] = true;
+            Blynk.notify(String::format("Kombucha %d%% Complete", p * 10));
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void setStartTime(long newTime) {
+    startTime = newTime;
+    completionTime = startTime + (DAY_IN_SECS * MAX_BREW_TIME);
+    totalBrewTime = completionTime - startTime;
+
+    EEPROM.put(START_TIME_ADDR, startTime);
+}
+
+//------------------------------------------------------------------------------
+void resetData(long newTime) {
+    setStartTime(newTime);
+
+    // Avg Temp
+    sampleCount = 0;
+    tempSum = 0.0;
+
+    // Notifications Sent
+    memset(notifyPercent, false, sizeof(boolean) * 11);
 }
 
 //------------------------------------------------------------------------------
 void setup() {
     delay(5000);
+
+    EEPROM.get(START_TIME_ADDR, startTime);
+    if (startTime == 0xFFFFFFFF) {
+        // Mar 04 2017 22:00
+        startTime = 1488682800;
+    }
+    setStartTime(startTime);
+
     Blynk.begin(auth);
 
     monitor.begin();
@@ -66,6 +113,7 @@ String durationToString(long start, long end) {
 
     return (String(dStr));
 }
+
 //------------------------------------------------------------------------------
 void loop() {
     Blynk.run();
@@ -83,6 +131,7 @@ void loop() {
         float percentComplete =
             ((float)currBrewTime / (float)totalBrewTime) * 100.0;
         Blynk.virtualWrite(3, floor(percentComplete));
+        notifyPercentComplete(percentComplete);
 
         // Get erratic reading from the Temp Sensor sometimes.
         // Protected against those
@@ -102,15 +151,16 @@ void loop() {
                 Blynk.virtualWrite(5, 255);
                 Blynk.virtualWrite(6, 0);
             }
+
+            sampleCount++;
+            tempSum += data->tempF;
+            Blynk.virtualWrite(
+                9, String::format("%0.1f", tempSum / (float)sampleCount));
         }
 
         Blynk.virtualWrite(2, data->brightness);
 
         Blynk.virtualWrite(7, durationToString(startTime, currTime));
-
-        // ***** DEBUG ***** //
-        Blynk.virtualWrite(20, Time.timeStr());
-        // ***** DEBUG ***** //
 
         lastUpdate = currTime;
 
